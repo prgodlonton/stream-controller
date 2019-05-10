@@ -2,7 +2,6 @@ package main
 
 import (
 	"context"
-	"fmt"
 	"github.com/pgodlonton/stream-controller/internal/startup"
 	"net/http"
 	"os"
@@ -17,28 +16,29 @@ func main() {
 	signals := make(chan os.Signal)
 	signal.Notify(signals, os.Interrupt, os.Kill)
 
-	fmt.Println("starting...")
+	logger := resolver.ResolveLogger()
+	logger.Info("starting...")
 
 	// start server
 	server := resolver.ResolveHTTPServer()
 	go func() {
 		if err := server.ListenAndServe(); err != nil && err != http.ErrServerClosed {
-			fmt.Printf("http server stopped due to %v\n", err.Error())
+			logger.Errorw("unexpected http server listen error", "error", err)
 		}
 	}()
 
 	// listen for interrupt/kill signal
 	s := <-signals
-	fmt.Printf("caught %v: stopping...\n", s.String())
+	logger.Infow("caught signal: stopping...", "signal", s)
 
 	// shutdown server
 	ctx, cfn := context.WithTimeout(context.Background(), config.Server.ShutdownTimeout)
 	defer cfn()
 
 	if err := server.Shutdown(ctx); err != nil {
-		fmt.Printf("unclean http server shutdown due to %v\n", err.Error())
+		logger.Errorw("unclean http server shutdown", "error", err)
 		os.Exit(1)
 	}
 
-	fmt.Println("stopped successfully")
+	logger.Info("stopped gracefully")
 }

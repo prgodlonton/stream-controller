@@ -1,15 +1,22 @@
 package handlers
 
 import (
-	"fmt"
+	"go.uber.org/zap"
 	"net/http"
 )
 
 type Handler struct {
+	logger *zap.SugaredLogger
+}
+
+func NewHandler(logger *zap.SugaredLogger) http.Handler {
+	return &Handler{
+		logger: logger,
+	}
 }
 
 func (h *Handler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	if _, err := w.Write([]byte("server is responding")); err != nil {
-		fmt.Printf("cannot write response due to %v\n", err.Error())
+		h.logger.Errorw("writing response body", "error", err)
 	}
 }

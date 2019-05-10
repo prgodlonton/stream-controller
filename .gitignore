@@ -1,5 +1,8 @@
 # IDE folder 
 .idea/
 
+# libraries
+vendor/
+
 # executables
 stream-controller
