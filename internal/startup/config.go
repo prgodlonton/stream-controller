@@ -2,10 +2,20 @@ package startup
 
 import "time"
 
-const (
+type Config struct {
+	Server Server `json:"server"`
+}
 
-	// ServerShutdownTimeout specifies the time to wait for the server to finish serving pending requests.
-	ServerShutdownTimeout = 5 * time.Second
-)
+type Server struct {
+	Addr            string        `json:"addr"`
+	ShutdownTimeout time.Duration `json:"shutdown-timeout"`
+}
 
-
+func ReadConfiguration() *Config {
+	return &Config{
+		Server: Server{
+			Addr:            "0.0.0.0:8080",
+			ShutdownTimeout: 5 * time.Second,
+		},
+	}
+}
