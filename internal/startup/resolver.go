@@ -19,7 +19,13 @@ func NewResolver(config *Config) *Resolver {
 	resolver := &Resolver{
 		config: config,
 	}
+	resolver.resolveEager()
 	return resolver
+}
+
+func (r *Resolver) resolveEager() {
+	r.ResolveLogger()
+	r.ResolveHTTPServer()
 }
 
 func (r *Resolver) ResolveLogger() *zap.SugaredLogger {
