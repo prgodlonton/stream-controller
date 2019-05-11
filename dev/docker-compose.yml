@@ -1,0 +1,8 @@
+version: "3"
+
+services:
+  consul:
+    command: consul agent -dev
+    container_name: local_consul
+    image: consul:1.5
+    network_mode: host

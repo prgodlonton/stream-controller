@@ -1,21 +1,65 @@
 package startup
 
-import "time"
+import (
+	"encoding/json"
+	"github.com/hashicorp/consul/api"
+	"os"
+)
 
+const (
+	// ConsulAddr environment variable holding the consul address
+	ConsulAddr = "CONSUL_ADDRESS"
+
+	// ConsulKey environment variable holding the key where the config is stored
+	ConsulKey = "CONSUL_KEY"
+)
+
+// Config holds all configuration
 type Config struct {
 	Server Server `json:"server"`
 }
 
+// Server holds server-specific configuration
 type Server struct {
-	Addr            string        `json:"addr"`
-	ShutdownTimeout time.Duration `json:"shutdown-timeout"`
+	Address         string `json:"address"`
+	ShutdownTimeout int    `json:"shutdown-timeout"`
 }
 
 func ReadConfiguration() *Config {
-	return &Config{
-		Server: Server{
-			Addr:            "0.0.0.0:8080",
-			ShutdownTimeout: 5 * time.Second,
-		},
+	consulAddress := getEnvValue(ConsulAddr, "http://localhost:8500")
+	consulKey := getEnvValue(ConsulKey, "services/stream-control")
+
+	kv := getConsulKV(consulAddress)
+	return getConsulConfig(kv, consulKey)
+}
+
+func getEnvValue(key, fallback string) string {
+	if value := os.Getenv(key); value != "" {
+		return value
 	}
+	return fallback
+}
+
+func getConsulKV(address string) *api.KV {
+	client, err := api.NewClient(
+		&api.Config{
+			Address: address,
+		},
+	)
+	if err != nil {
+		panic(err)
+	}
+	return client.KV()
+}
+
+func getConsulConfig(store *api.KV, consulKey string) *Config {
+	pair, _, err := store.Get(consulKey, &api.QueryOptions{})
+	if err != nil {
+		panic(err)
+	}
+	var config Config
+	if err := json.Unmarshal(pair.Value, &config); err != nil {
+		panic(err)
+	}
+	return &config
 }

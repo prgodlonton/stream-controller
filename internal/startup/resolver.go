@@ -39,7 +39,7 @@ func (r *Resolver) ResolveHTTPHandler() http.Handler {
 func (r *Resolver) ResolveHTTPServer() *http.Server {
 	if r.server == nil {
 		r.server = &http.Server{
-			Addr:         r.config.Server.Addr,
+			Addr:         r.config.Server.Address,
 			Handler:      r.ResolveHTTPHandler(),
 			IdleTimeout:  time.Second * 60,
 			ReadTimeout:  time.Second * 15,

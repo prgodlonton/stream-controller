@@ -6,6 +6,7 @@ import (
 	"net/http"
 	"os"
 	"os/signal"
+	"time"
 )
 
 // main entry point
@@ -32,7 +33,8 @@ func main() {
 	logger.Infow("caught signal: stopping...", "signal", s)
 
 	// shutdown server
-	ctx, cfn := context.WithTimeout(context.Background(), config.Server.ShutdownTimeout)
+	waitTime := time.Duration(config.Server.ShutdownTimeout) * time.Second
+	ctx, cfn := context.WithTimeout(context.Background(), waitTime)
 	defer cfn()
 
 	if err := server.Shutdown(ctx); err != nil {
