@@ -27,6 +27,7 @@ func NewResolver(config *Config) *Resolver {
 func (r *Resolver) resolveEager() {
 	r.ResolveLogger()
 	r.ResolveServer()
+	r.ResolveStore()
 }
 
 func (r *Resolver) ResolveLogger() *zap.SugaredLogger {
