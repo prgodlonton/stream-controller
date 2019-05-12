@@ -1,5 +1,9 @@
 #!/usr/bin/env bash
 
+# run the following to install mockgen:
+#   go get github.com/golang/mock/gomock
+#   go install github.com/golang/mock/mockgen
+
 # create response writer mock
 mockgen -package mocks \
     -destination testing/mocks/responsewriter.go \
