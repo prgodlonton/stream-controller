@@ -23,6 +23,10 @@ func createStream(store Store) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		userID, streamID := getURLParams(r)
 		if err := store.Add(userID, streamID); err != nil {
+			if err == exceededStreamsQuota {
+				w.WriteHeader(http.StatusBadRequest)
+				return
+			}
 			w.WriteHeader(http.StatusInternalServerError)
 			return
 		}
