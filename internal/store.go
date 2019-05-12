@@ -24,7 +24,7 @@ func NewRedisStore(client *redis.Client) Store {
 }
 
 func (rs *RedisStore) Add(userID, streamID string) error {
-	cmd := rs.client.RPush(userID, streamID)
+	cmd := rs.client.SAdd(userID, streamID)
 	if _, err := cmd.Result(); err != nil {
 		return errors.Wrap(err, "failed to add element to list")
 	}
@@ -32,7 +32,7 @@ func (rs *RedisStore) Add(userID, streamID string) error {
 }
 
 func (rs *RedisStore) Get(userID string) ([]string, error) {
-	cmd := rs.client.LRange(userID, 0, -1)
+	cmd := rs.client.SMembers(userID)
 	elements, err := cmd.Result()
 	if err != nil {
 		return []string{}, errors.Wrap(err, "failed to get list elements")
@@ -41,7 +41,7 @@ func (rs *RedisStore) Get(userID string) ([]string, error) {
 }
 
 func (rs *RedisStore) Remove(userID, streamID string) error {
-	cmd := rs.client.LRem(userID, 1, streamID)
+	cmd := rs.client.SRem(userID, streamID)
 	if _, err := cmd.Result(); err != nil {
 		return errors.Wrap(err, "failed to remove element from list")
 	}
