@@ -6,7 +6,7 @@
 
 # create response writer mock
 mockgen -package mocks \
-    -destination testing/mocks/responsewriter.go \
+    -destination testing/mocks/response_writer.go \
     net/http \
     ResponseWriter
 
