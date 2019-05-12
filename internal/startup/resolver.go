@@ -1,7 +1,9 @@
 package startup
 
 import (
+	"github.com/go-redis/redis"
 	"github.com/pgodlonton/stream-controller/internal"
+	"github.com/pkg/errors"
 	"go.uber.org/zap"
 	"net/http"
 	"time"
@@ -11,9 +13,9 @@ type Resolver struct {
 	config *Config
 
 	// singletons
+	client *redis.Client
 	logger *zap.SugaredLogger
 	server *http.Server
-	store  internal.Store
 }
 
 func NewResolver(config *Config) *Resolver {
@@ -38,6 +40,22 @@ func (r *Resolver) ResolveLogger() *zap.SugaredLogger {
 	return r.logger
 }
 
+func (r *Resolver) ResolveRedisClient() *redis.Client {
+	if r.client == nil {
+		r.client = redis.NewClient(
+			&redis.Options{
+				Addr:     r.config.Redis.Address,
+				Password: r.config.Redis.Password,
+				DB:       r.config.Redis.DB,
+			},
+		)
+		if _, err := r.client.Ping().Result(); err != nil {
+			panic(errors.Wrap(err, "resolver: failed to ping redis server"))
+		}
+	}
+	return r.client
+}
+
 func (r *Resolver) ResolveRouter() http.Handler {
 	return internal.NewRouter(
 		r.ResolveStore(),
@@ -58,8 +76,7 @@ func (r *Resolver) ResolveServer() *http.Server {
 }
 
 func (r *Resolver) ResolveStore() internal.Store {
-	if r.store == nil {
-		r.store = &internal.RedisStore{}
-	}
-	return r.store
+	return internal.NewRedisStore(
+		r.ResolveRedisClient(),
+	)
 }

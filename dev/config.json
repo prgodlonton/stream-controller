@@ -1,4 +1,9 @@
 {
+  "redis": {
+    "address": "localhost:6379",
+    "db": 0,
+    "password": ""
+  },
   "server": {
     "address": "0.0.0.0:8080",
     "shutdown-timeout": 5

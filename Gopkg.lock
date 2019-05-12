@@ -18,6 +18,22 @@
   version = "v4.0.2"
 
 [[projects]]
+  digest = "1:8c7410dae63c74bd92db09bf33af7e0698b635ab6a397fd8e9e10dfcce3138ac"
+  name = "github.com/go-redis/redis"
+  packages = [
+    ".",
+    "internal",
+    "internal/consistenthash",
+    "internal/hashtag",
+    "internal/pool",
+    "internal/proto",
+    "internal/util",
+  ]
+  pruneopts = ""
+  revision = "d22fde8721cc915a55aeb6b00944a76a92bfeb6e"
+  version = "v6.15.2"
+
+[[projects]]
   digest = "1:68c64bb61d55dcd17c82ca0b871ddddb5ae18b30cfe26f6bfd4b6df6287dc2e0"
   name = "github.com/golang/mock"
   packages = ["gomock"]
@@ -90,6 +106,14 @@
   version = "v1.1.2"
 
 [[projects]]
+  digest = "1:1d7e1867c49a6dd9856598ef7c3123604ea3daabf5b83f303ff457bcbc410b1d"
+  name = "github.com/pkg/errors"
+  packages = ["."]
+  pruneopts = ""
+  revision = "ba968bfe8b2f7e042a574c888954fccecfa385b4"
+  version = "v0.8.1"
+
+[[projects]]
   digest = "1:e6ff7840319b6fda979a918a8801005ec2049abca62af19211d96971d8ec3327"
   name = "go.uber.org/atomic"
   packages = ["."]
@@ -125,8 +149,10 @@
   analyzer-version = 1
   input-imports = [
     "github.com/go-chi/chi",
+    "github.com/go-redis/redis",
     "github.com/golang/mock/gomock",
     "github.com/hashicorp/consul/api",
+    "github.com/pkg/errors",
     "go.uber.org/zap",
   ]
   solver-name = "gps-cdcl"

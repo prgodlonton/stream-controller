@@ -16,7 +16,15 @@ const (
 
 // Config holds all configuration
 type Config struct {
+	Redis  Redis  `json:"redis"`
 	Server Server `json:"server"`
+}
+
+// Redis holds redis server configuration
+type Redis struct {
+	Address  string `json:"address"`
+	Password string `json:"password"`
+	DB       int    `json:"db"`
 }
 
 // Server holds server-specific configuration
