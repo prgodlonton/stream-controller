@@ -6,8 +6,13 @@ import (
 	"fmt"
 	"github.com/golang/mock/gomock"
 	"github.com/pgodlonton/stream-controller/testing/mocks"
+	"go.uber.org/zap"
 	"net/http"
 	"testing"
+)
+
+var (
+	noopLogger = zap.NewNop().Sugar()
 )
 
 func TestShouldReturnCreatedWhenStreamIsAdded(t *testing.T) {
@@ -23,7 +28,7 @@ func TestShouldReturnCreatedWhenStreamIsAdded(t *testing.T) {
 
 	r := createHTTPRequest("PUT", "v1/users/alan/streams/boxing1")
 
-	router := NewRouter(store)
+	router := NewRouter(noopLogger, store)
 	router.ServeHTTP(w, r)
 }
 
@@ -40,7 +45,7 @@ func TestShouldReturnBadRequestWhenUsersHasReachedStreamQuotaLimit(t *testing.T)
 
 	r := createHTTPRequest("PUT", "v1/users/michelangelo/streams/bobsleigh32")
 
-	router := NewRouter(store)
+	router := NewRouter(noopLogger, store)
 	router.ServeHTTP(w, r)
 }
 
@@ -57,7 +62,7 @@ func TestShouldReturnInternalServerErrorWhenStreamCannotBeAdded(t *testing.T) {
 
 	r := createHTTPRequest("PUT", "v1/users/bob/streams/tennis2")
 
-	router := NewRouter(store)
+	router := NewRouter(noopLogger, store)
 	router.ServeHTTP(w, r)
 }
 
@@ -76,7 +81,7 @@ func TestShouldReturnActiveStreamsForUser(t *testing.T) {
 
 	r := createHTTPRequest("GET", "v1/users/cassandra")
 
-	router := NewRouter(store)
+	router := NewRouter(noopLogger, store)
 	router.ServeHTTP(w, r)
 }
 
@@ -95,7 +100,7 @@ func TestShouldReturnInternalServerErrorWhenActiveStreamsCannotBeRead(t *testing
 
 	r := createHTTPRequest("GET", "v1/users/rachel")
 
-	router := NewRouter(store)
+	router := NewRouter(noopLogger, store)
 	router.ServeHTTP(w, r)
 }
 
@@ -112,7 +117,7 @@ func TestShouldReturnOKWhenStreamIsRemoved(t *testing.T) {
 
 	r := createHTTPRequest("DELETE", "v1/users/charlie/streams/snooker3")
 
-	router := NewRouter(store)
+	router := NewRouter(noopLogger, store)
 	router.ServeHTTP(w, r)
 }
 
@@ -129,7 +134,7 @@ func TestShouldReturnInternalServerErrorWhenStreamCannotBeRemoved(t *testing.T) 
 
 	r := createHTTPRequest("DELETE", "v1/users/duncan/streams/nfl4")
 
-	router := NewRouter(store)
+	router := NewRouter(noopLogger, store)
 	router.ServeHTTP(w, r)
 }
 

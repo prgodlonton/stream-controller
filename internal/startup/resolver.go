@@ -28,8 +28,8 @@ func NewResolver(config *Config) *Resolver {
 
 func (r *Resolver) resolveEager() {
 	r.ResolveLogger()
+	r.ResolveRedisClient()
 	r.ResolveServer()
-	r.ResolveStore()
 }
 
 func (r *Resolver) ResolveLogger() *zap.SugaredLogger {
@@ -58,6 +58,7 @@ func (r *Resolver) ResolveRedisClient() *redis.Client {
 
 func (r *Resolver) ResolveRouter() http.Handler {
 	return internal.NewRouter(
+		r.ResolveLogger(),
 		r.ResolveStore(),
 	)
 }
