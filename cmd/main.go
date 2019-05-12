@@ -21,7 +21,7 @@ func main() {
 	logger.Info("starting...")
 
 	// start server
-	server := resolver.ResolveHTTPServer()
+	server := resolver.ResolveServer()
 	go func() {
 		if err := server.ListenAndServe(); err != nil && err != http.ErrServerClosed {
 			logger.Errorw("unexpected http server listen error", "error", err)

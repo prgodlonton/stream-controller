@@ -1,7 +1,7 @@
 package startup
 
 import (
-	"github.com/pgodlonton/stream-controller/internal/handlers"
+	"github.com/pgodlonton/stream-controller/internal"
 	"go.uber.org/zap"
 	"net/http"
 	"time"
@@ -25,7 +25,7 @@ func NewResolver(config *Config) *Resolver {
 
 func (r *Resolver) resolveEager() {
 	r.ResolveLogger()
-	r.ResolveHTTPServer()
+	r.ResolveServer()
 }
 
 func (r *Resolver) ResolveLogger() *zap.SugaredLogger {
@@ -36,17 +36,15 @@ func (r *Resolver) ResolveLogger() *zap.SugaredLogger {
 	return r.logger
 }
 
-func (r *Resolver) ResolveHTTPHandler() http.Handler {
-	return handlers.NewHandler(
-		r.ResolveLogger(),
-	)
+func (r *Resolver) ResolveRouter() http.Handler {
+	return internal.NewRouter(nil)
 }
 
-func (r *Resolver) ResolveHTTPServer() *http.Server {
+func (r *Resolver) ResolveServer() *http.Server {
 	if r.server == nil {
 		r.server = &http.Server{
 			Addr:         r.config.Server.Address,
-			Handler:      r.ResolveHTTPHandler(),
+			Handler:      r.ResolveRouter(),
 			IdleTimeout:  time.Second * 60,
 			ReadTimeout:  time.Second * 15,
 			WriteTimeout: time.Second * 15,

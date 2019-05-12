@@ -10,6 +10,22 @@
   revision = "ec5e00d3c878b2a97bbe0884ef45ffd1b4f669f5"
 
 [[projects]]
+  digest = "1:55d7786e315a68ad27227a9800ebed9c48a23379de13358ab9a331ae8fe39283"
+  name = "github.com/go-chi/chi"
+  packages = ["."]
+  pruneopts = ""
+  revision = "da24bba8dcd4021cafac38724bf10dccc97c3e36"
+  version = "v4.0.2"
+
+[[projects]]
+  digest = "1:68c64bb61d55dcd17c82ca0b871ddddb5ae18b30cfe26f6bfd4b6df6287dc2e0"
+  name = "github.com/golang/mock"
+  packages = ["gomock"]
+  pruneopts = ""
+  revision = "9fa652df1129bef0e734c9cf9bf6dbae9ef3b9fa"
+  version = "1.3.1"
+
+[[projects]]
   digest = "1:bb771b48f4e3f2bf80f4aad6ad37d3043616db746925eea022df8109c27c4da1"
   name = "github.com/hashicorp/consul"
   packages = ["api"]
@@ -108,6 +124,8 @@
   analyzer-name = "dep"
   analyzer-version = 1
   input-imports = [
+    "github.com/go-chi/chi",
+    "github.com/golang/mock/gomock",
     "github.com/hashicorp/consul/api",
     "go.uber.org/zap",
   ]
