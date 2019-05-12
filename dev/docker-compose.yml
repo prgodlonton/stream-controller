@@ -6,3 +6,7 @@ services:
     container_name: local_consul
     image: consul:1.5
     network_mode: host
+  redis:
+    container_name: local_redis
+    image: redis:4.0.14
+    network_mode: host

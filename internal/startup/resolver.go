@@ -13,6 +13,7 @@ type Resolver struct {
 	// singletons
 	logger *zap.SugaredLogger
 	server *http.Server
+	store  internal.Store
 }
 
 func NewResolver(config *Config) *Resolver {
@@ -37,7 +38,9 @@ func (r *Resolver) ResolveLogger() *zap.SugaredLogger {
 }
 
 func (r *Resolver) ResolveRouter() http.Handler {
-	return internal.NewRouter(nil)
+	return internal.NewRouter(
+		r.ResolveStore(),
+	)
 }
 
 func (r *Resolver) ResolveServer() *http.Server {
@@ -51,4 +54,11 @@ func (r *Resolver) ResolveServer() *http.Server {
 		}
 	}
 	return r.server
+}
+
+func (r *Resolver) ResolveStore() internal.Store {
+	if r.store == nil {
+		r.store = &internal.RedisStore{}
+	}
+	return r.store
 }
