@@ -44,6 +44,44 @@ func TestShouldReturnInternalServerErrorWhenStreamCannotBeAdded(t *testing.T) {
 	router.ServeHTTP(w, r)
 }
 
+func TestShouldReturnActiveStreamsForUser(t *testing.T) {
+	mockCtrl := gomock.NewController(t)
+	defer mockCtrl.Finish()
+
+	store := mocks.NewMockStore(mockCtrl)
+	store.EXPECT().Get("cassandra").MaxTimes(1).Return(
+		[]string{"boxing16", "tennis42", "sumo89"},
+		nil,
+	)
+
+	w := mocks.NewMockResponseWriter(mockCtrl)
+	w.EXPECT().Write([]byte("boxing16,tennis42,sumo89"))
+
+	r := createHTTPRequest("GET", "v1/users/cassandra")
+
+	router := NewRouter(store)
+	router.ServeHTTP(w, r)
+}
+
+func TestShouldReturnInternalServerErrorWhenActiveStreamsCannotBeRead(t *testing.T) {
+	mockCtrl := gomock.NewController(t)
+	defer mockCtrl.Finish()
+
+	store := mocks.NewMockStore(mockCtrl)
+	store.EXPECT().Get("rachel").MaxTimes(1).Return(
+		[]string{},
+		errors.New("intentional error"),
+	)
+
+	w := mocks.NewMockResponseWriter(mockCtrl)
+	w.EXPECT().WriteHeader(http.StatusInternalServerError)
+
+	r := createHTTPRequest("GET", "v1/users/rachel")
+
+	router := NewRouter(store)
+	router.ServeHTTP(w, r)
+}
+
 func TestShouldReturnOKWhenStreamIsRemoved(t *testing.T) {
 	mockCtrl := gomock.NewController(t)
 	defer mockCtrl.Finish()
