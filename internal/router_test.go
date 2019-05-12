@@ -27,6 +27,23 @@ func TestShouldReturnCreatedWhenStreamIsAdded(t *testing.T) {
 	router.ServeHTTP(w, r)
 }
 
+func TestShouldReturnBadRequestWhenUsersHasReachedStreamQuotaLimit(t *testing.T) {
+	mockCtrl := gomock.NewController(t)
+	defer mockCtrl.Finish()
+
+	store := mocks.NewMockStore(mockCtrl)
+	store.EXPECT().Add("michelangelo", "bobsleigh32").MinTimes(1).Return(exceededStreamsQuota)
+	store.EXPECT().Remove(gomock.Any(), gomock.Any()).MaxTimes(0)
+
+	w := mocks.NewMockResponseWriter(mockCtrl)
+	w.EXPECT().WriteHeader(http.StatusBadRequest)
+
+	r := createHTTPRequest("PUT", "v1/users/michelangelo/streams/bobsleigh32")
+
+	router := NewRouter(store)
+	router.ServeHTTP(w, r)
+}
+
 func TestShouldReturnInternalServerErrorWhenStreamCannotBeAdded(t *testing.T) {
 	mockCtrl := gomock.NewController(t)
 	defer mockCtrl.Finish()
