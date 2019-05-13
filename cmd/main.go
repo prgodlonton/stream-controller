@@ -2,7 +2,7 @@ package main
 
 import (
 	"context"
-	"github.com/pgodlonton/stream-controller/internal/startup"
+	"github.com/prgodlonton/stream-controller/internal/startup"
 	"net/http"
 	"os"
 	"os/signal"

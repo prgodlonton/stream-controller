@@ -5,7 +5,7 @@ import (
 	"errors"
 	"fmt"
 	"github.com/golang/mock/gomock"
-	"github.com/pgodlonton/stream-controller/testing/mocks"
+	"github.com/prgodlonton/stream-controller/testing/mocks"
 	"go.uber.org/zap"
 	"net/http"
 	"testing"

@@ -2,8 +2,8 @@ package startup
 
 import (
 	"github.com/go-redis/redis"
-	"github.com/pgodlonton/stream-controller/internal"
 	"github.com/pkg/errors"
+	"github.com/prgodlonton/stream-controller/internal"
 	"go.uber.org/zap"
 	"net/http"
 	"time"
