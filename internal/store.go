@@ -9,7 +9,7 @@ var exceededStreamsQuota = errors.New("user has exceeded streaming quota")
 
 const (
 	// *atomic* lua script to add strings to the given set if it has less than 3 elements
-	condSetAdd = `if redis.call("SCARD",KEYS[1]) < 3 then return redis.call("SADD",KEYS[1],ARGV[1]) else return 0 end`
+	condSetAdd = `if redis.call("SCARD",KEYS[1]) < 3 then return redis.call("SADD",KEYS[1],ARGV[1]) else return -1 end`
 )
 
 // Store records the streams being watched by users
@@ -43,7 +43,7 @@ func (rs *RedisStore) Add(userID, streamID string) error {
 	if !ok {
 		return errors.New("cannot convert redis eval return value to int64")
 	}
-	if added == 0 {
+	if added == -1 {
 		return exceededStreamsQuota
 	}
 	return nil
