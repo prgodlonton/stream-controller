@@ -31,7 +31,7 @@ func TestShouldReturnCreatedWhenStreamIsAdded(t *testing.T) {
 	router.ServeHTTP(w, r)
 }
 
-func TestShouldReturnBadRequestWhenUsersHasReachedStreamQuotaLimit(t *testing.T) {
+func TestShouldReturnBadRequestWhenUserHasReachedStreamQuotaLimit(t *testing.T) {
 	mockCtrl := gomock.NewController(t)
 	defer mockCtrl.Finish()
 

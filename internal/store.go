@@ -19,17 +19,19 @@ type Store interface {
 	Remove(userID, streamID string) error
 }
 
-// RedisStore records the streams in a Redis server cluster
+// RedisStore a Redis-backed store
 type RedisStore struct {
 	client *redis.Client
 }
 
+// NewRedisStore creates a new Redis-backed store
 func NewRedisStore(client *redis.Client) Store {
 	return &RedisStore{
 		client: client,
 	}
 }
 
+// Adds records a user as watching a stream
 func (rs *RedisStore) Add(userID, streamID string) error {
 	cmd := rs.client.Eval(condSetAdd, []string{userID}, streamID)
 	val, err := cmd.Result()
@@ -47,6 +49,7 @@ func (rs *RedisStore) Add(userID, streamID string) error {
 	return nil
 }
 
+// Get returns all stream being watched by a single user
 func (rs *RedisStore) Get(userID string) ([]string, error) {
 	cmd := rs.client.SMembers(userID)
 	elements, err := cmd.Result()
@@ -56,6 +59,7 @@ func (rs *RedisStore) Get(userID string) ([]string, error) {
 	return elements, nil
 }
 
+// Remove removes the record of a user watching a stream
 func (rs *RedisStore) Remove(userID, streamID string) error {
 	cmd := rs.client.SRem(userID, streamID)
 	if _, err := cmd.Result(); err != nil {

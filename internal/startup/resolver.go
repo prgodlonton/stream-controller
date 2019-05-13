@@ -9,6 +9,7 @@ import (
 	"time"
 )
 
+// Resolver resolves all dependencies and handles dependency injection
 type Resolver struct {
 	config *Config
 
@@ -18,6 +19,7 @@ type Resolver struct {
 	server *http.Server
 }
 
+// NewResolver returns a new resolver
 func NewResolver(config *Config) *Resolver {
 	resolver := &Resolver{
 		config: config,

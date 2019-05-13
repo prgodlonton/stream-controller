@@ -33,6 +33,7 @@ type Server struct {
 	ShutdownTimeout int    `json:"shutdown-timeout"`
 }
 
+// Returns the configuration held in Consul KV store
 func ReadConfiguration() *Config {
 	consulAddress := getEnvValue(ConsulAddr, "http://localhost:8500")
 	consulKey := getEnvValue(ConsulKey, "services/stream-control")
