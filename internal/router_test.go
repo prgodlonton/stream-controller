@@ -20,7 +20,7 @@ func TestShouldReturnCreatedWhenStreamIsAdded(t *testing.T) {
 	defer mockCtrl.Finish()
 
 	store := mocks.NewMockStore(mockCtrl)
-	store.EXPECT().Add("alan", "boxing1").MinTimes(1).Return(nil)
+	store.EXPECT().AddStream("alan", "boxing1").MinTimes(1).Return(nil)
 
 	w := mocks.NewMockResponseWriter(mockCtrl)
 	w.EXPECT().WriteHeader(http.StatusCreated)
@@ -36,7 +36,7 @@ func TestShouldReturnBadRequestWhenUserHasReachedStreamQuotaLimit(t *testing.T) 
 	defer mockCtrl.Finish()
 
 	store := mocks.NewMockStore(mockCtrl)
-	store.EXPECT().Add("michelangelo", "bobsleigh32").MinTimes(1).Return(exceededStreamsQuota)
+	store.EXPECT().AddStream("michelangelo", "bobsleigh32").MinTimes(1).Return(exceededStreamsQuota)
 
 	w := mocks.NewMockResponseWriter(mockCtrl)
 	w.EXPECT().WriteHeader(http.StatusBadRequest)
@@ -52,7 +52,7 @@ func TestShouldReturnInternalServerErrorWhenStreamCannotBeAdded(t *testing.T) {
 	defer mockCtrl.Finish()
 
 	store := mocks.NewMockStore(mockCtrl)
-	store.EXPECT().Add("bob", "tennis2").MinTimes(1).Return(errors.New("intentional error"))
+	store.EXPECT().AddStream("bob", "tennis2").MinTimes(1).Return(errors.New("intentional error"))
 
 	w := mocks.NewMockResponseWriter(mockCtrl)
 	w.EXPECT().WriteHeader(http.StatusInternalServerError)
@@ -68,7 +68,7 @@ func TestShouldReturnActiveStreamsForUser(t *testing.T) {
 	defer mockCtrl.Finish()
 
 	store := mocks.NewMockStore(mockCtrl)
-	store.EXPECT().Get("cassandra").MaxTimes(1).Return(
+	store.EXPECT().GetStreams("cassandra").MaxTimes(1).Return(
 		[]string{"boxing16", "tennis42", "sumo89"},
 		nil,
 	)
@@ -87,7 +87,7 @@ func TestShouldReturnInternalServerErrorWhenActiveStreamsCannotBeRead(t *testing
 	defer mockCtrl.Finish()
 
 	store := mocks.NewMockStore(mockCtrl)
-	store.EXPECT().Get("rachel").MaxTimes(1).Return(
+	store.EXPECT().GetStreams("rachel").MaxTimes(1).Return(
 		[]string{},
 		errors.New("intentional error"),
 	)
@@ -106,7 +106,7 @@ func TestShouldReturnInternalServerErrorWhenWritingStreamListToResponseWriterFai
 	defer mockCtrl.Finish()
 
 	store := mocks.NewMockStore(mockCtrl)
-	store.EXPECT().Get("rodney").MaxTimes(1).Return(
+	store.EXPECT().GetStreams("rodney").MaxTimes(1).Return(
 		[]string{"boxing16", "tennis42", "sumo89"},
 		nil,
 	)
@@ -126,7 +126,7 @@ func TestShouldReturnOKWhenStreamIsRemoved(t *testing.T) {
 	defer mockCtrl.Finish()
 
 	store := mocks.NewMockStore(mockCtrl)
-	store.EXPECT().Remove("charlie", "snooker3").MinTimes(1).Return(nil)
+	store.EXPECT().RemoveStream("charlie", "snooker3").MinTimes(1).Return(nil)
 
 	w := mocks.NewMockResponseWriter(mockCtrl)
 	w.EXPECT().WriteHeader(http.StatusOK)
@@ -142,7 +142,7 @@ func TestShouldReturnInternalServerErrorWhenStreamCannotBeRemoved(t *testing.T) 
 	defer mockCtrl.Finish()
 
 	store := mocks.NewMockStore(mockCtrl)
-	store.EXPECT().Remove("duncan", "nfl4").MinTimes(1).Return(errors.New("intentional error"))
+	store.EXPECT().RemoveStream("duncan", "nfl4").MinTimes(1).Return(errors.New("intentional error"))
 
 	w := mocks.NewMockResponseWriter(mockCtrl)
 	w.EXPECT().WriteHeader(http.StatusInternalServerError)

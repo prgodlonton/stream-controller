@@ -23,7 +23,7 @@ func NewRouter(logger *zap.SugaredLogger, store Store) http.Handler {
 func createStream(logger *zap.SugaredLogger, store Store) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		userID, streamID := getURLParams(r)
-		if err := store.Add(userID, streamID); err != nil {
+		if err := store.AddStream(userID, streamID); err != nil {
 			if err == exceededStreamsQuota {
 				logger.Debugw(
 					"user exceeded streaming quota",
@@ -49,7 +49,7 @@ func createStream(logger *zap.SugaredLogger, store Store) http.HandlerFunc {
 func listStreams(logger *zap.SugaredLogger, store Store) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		userID := chi.URLParam(r, "userID")
-		streamIDs, err := store.Get(userID)
+		streamIDs, err := store.GetStreams(userID)
 		if err != nil {
 			logger.Debugw(
 				"cannot list streams",
@@ -74,7 +74,7 @@ func listStreams(logger *zap.SugaredLogger, store Store) http.HandlerFunc {
 func deleteStream(logger *zap.SugaredLogger, store Store) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		userID, streamID := getURLParams(r)
-		if err := store.Remove(userID, streamID); err != nil {
+		if err := store.RemoveStream(userID, streamID); err != nil {
 			logger.Errorw(
 				"cannot remove stream",
 				"userID", userID,

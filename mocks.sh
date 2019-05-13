@@ -13,5 +13,5 @@ mockgen -package mocks \
 # create store mock
 mockgen -package mocks \
     -destination testing/mocks/store.go \
-    github.com/pgodlonton/stream-controller/internal \
+    github.com/prgodlonton/stream-controller/internal \
     Store

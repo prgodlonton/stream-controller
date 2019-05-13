@@ -14,9 +14,9 @@ const (
 
 // Store records the streams being watched by users
 type Store interface {
-	Add(userID, streamID string) error
-	Get(userID string) ([]string, error)
-	Remove(userID, streamID string) error
+	AddStream(userID, streamID string) error
+	GetStreams(userID string) ([]string, error)
+	RemoveStream(userID, streamID string) error
 }
 
 // RedisStore a Redis-backed store
@@ -32,7 +32,7 @@ func NewRedisStore(client *redis.Client) Store {
 }
 
 // Adds records a user as watching a stream
-func (rs *RedisStore) Add(userID, streamID string) error {
+func (rs *RedisStore) AddStream(userID, streamID string) error {
 	cmd := rs.client.Eval(condSetAdd, []string{userID}, streamID)
 	val, err := cmd.Result()
 	if err != nil {
@@ -50,7 +50,7 @@ func (rs *RedisStore) Add(userID, streamID string) error {
 }
 
 // Get returns all stream being watched by a single user
-func (rs *RedisStore) Get(userID string) ([]string, error) {
+func (rs *RedisStore) GetStreams(userID string) ([]string, error) {
 	cmd := rs.client.SMembers(userID)
 	elements, err := cmd.Result()
 	if err != nil {
@@ -60,7 +60,7 @@ func (rs *RedisStore) Get(userID string) ([]string, error) {
 }
 
 // Remove removes the record of a user watching a stream
-func (rs *RedisStore) Remove(userID, streamID string) error {
+func (rs *RedisStore) RemoveStream(userID, streamID string) error {
 	cmd := rs.client.SRem(userID, streamID)
 	if _, err := cmd.Result(); err != nil {
 		return errors.Wrap(err, "failed to remove element from list")
