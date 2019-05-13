@@ -42,7 +42,7 @@ under which the configuration for this service is stored. If these are not provi
 
 ## How To Use
 
-The service exposes three RESTful endpoints. The HTTP verbose and path are given below: 
+The service exposes three RESTful endpoints. The HTTP method and path are given below: 
 
 * PUT: `/v1/users/{userID}/streams/{streamID}` records the user as watched that stream. If the user has not exceeded 
 their quota then `Created` is returned, otherwise `Bad Request` is returned. 
