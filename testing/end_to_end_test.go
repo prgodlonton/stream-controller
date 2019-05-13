@@ -26,6 +26,7 @@ func TestEndToEndScenarioForTwoUsers(t *testing.T) {
 	as.Equal(http.StatusCreated, watchStream("becky", "rugby7"))
 	as.Equal(http.StatusCreated, watchStream("becky", "tennis2"))
 
+	// charles starts watching
 	as.Equal(http.StatusCreated, watchStream("charles", "boxing1"))
 
 	// idempotency check
